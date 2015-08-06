@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:maxLevel="10" android:minLevel="0" android:drawable="@drawable/a0" />
+    <item android:maxLevel="20" android:minLevel="11" android:drawable="@drawable/a1" />
+    <item android:maxLevel="30" android:minLevel="21" android:drawable="@drawable/a2" />
+    <item android:maxLevel="40" android:minLevel="31" android:drawable="@drawable/a3" />
+    <item android:maxLevel="50" android:minLevel="41" android:drawable="@drawable/a4" />
+    <item android:maxLevel="60" android:minLevel="51" android:drawable="@drawable/a5" />
+    <item android:maxLevel="70" android:minLevel="61" android:drawable="@drawable/a6" />
+    <item android:maxLevel="80" android:minLevel="71" android:drawable="@drawable/a7" />
+    <item android:maxLevel="90" android:minLevel="81" android:drawable="@drawable/a8" />
+    <item android:maxLevel="100" android:minLevel="91" android:drawable="@drawable/a9" />
+</level-list>

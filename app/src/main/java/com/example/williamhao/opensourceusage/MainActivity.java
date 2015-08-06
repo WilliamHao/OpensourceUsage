@@ -10,4 +10,9 @@ public class MainActivity extends KJActivity {
         setContentView(R.layout.activity_main);
     }
 
+    @Override
+    public void initData(){
+        showActivity(this, AudioIconActivity2.class);
+    }
+
 }

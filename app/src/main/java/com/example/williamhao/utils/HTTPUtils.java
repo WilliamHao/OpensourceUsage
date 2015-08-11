@@ -2,8 +2,8 @@ package com.example.williamhao.utils;
 
 import android.util.Log;
 
-import com.bao.wec.app.Constant;
-import com.bao.wec.ui.base.BaseActivity;
+import com.example.williamhao.base.BaseActivity;
+import com.example.williamhao.opensourceusage.Constant;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -41,7 +41,7 @@ public class HTTPUtils {
     public static void postGetJson( JSONObject jsonObject, String op,  boolean needToken, SpUtils spUtils ,final OnPostReturnListener onPostReturnListener ){
         try {
             final DefaultHttpClient httpClient = new DefaultHttpClient();
-            final HttpPost httpPost = new HttpPost(Constant.Config.EASE_REST_URL + op);
+            final HttpPost httpPost = new HttpPost(Constant.Config.ZHIBO_URL + op);
             httpPost.addHeader(HTTPUtils.RestHeader_ContentType_key, HTTPUtils.RestHeader_ContentType_value);
 
             if(needToken && spUtils != null){
@@ -117,8 +117,8 @@ public class HTTPUtils {
         try{
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("grant_type","client_credentials");
-            jsonObject.put("client_id", Constant.Config.EASE_CLIENT_ID);
-            jsonObject.put("client_secret", Constant.Config.EASE_CLIENT_SECRET);
+            jsonObject.put("client_id", Constant.Config.ZHIBO_URL);
+            jsonObject.put("client_secret", Constant.Config.ZHIBO_URL);
             HTTPUtils.postGetJson(jsonObject,HTTPUtils.RestOp_GetToken,new OnPostReturnListener() {
                 @Override
                 public void onResponse(JSONObject json) throws Exception {

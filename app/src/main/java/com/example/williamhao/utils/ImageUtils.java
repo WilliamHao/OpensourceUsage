@@ -20,7 +20,7 @@ import android.view.View;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.ImageOptions;
-import com.bao.wec.app.Constant;
+import com.example.williamhao.opensourceusage.Constant;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

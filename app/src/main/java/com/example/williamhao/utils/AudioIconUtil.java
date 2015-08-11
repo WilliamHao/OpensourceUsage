@@ -20,6 +20,7 @@ public class AudioIconUtil {
     AudioRecord mAudioRecord;
     boolean isGetVoiceRun;
     Object mLock;
+    Object mLock2;
     private Handler mHandler;
     private static final int CONSTANT_WHAT = 123;
     private static final String CONSTANT_BUNDLE = "int";
@@ -28,6 +29,7 @@ public class AudioIconUtil {
 
     public AudioIconUtil(ImageView imageView) {
         mLock = new Object();
+        mLock2 = new Object();
         imageViewTag = false;
         if(imageView instanceof ImageView) {
             mImageView = imageView;
@@ -65,6 +67,7 @@ public class AudioIconUtil {
                 while (isGetVoiceRun) {
                     //r是实际读取的数据长度，一般而言r会小于buffersize
                     int r = mAudioRecord.read(buffer, 0, BUFFER_SIZE);
+                    if(r < 0) r = BUFFER_SIZE / 2;
                     long v = 0;
                     // 将 buffer 内容取出，进行平方和运算
                     for (int i = 0; i < buffer.length; i++) {
@@ -73,15 +76,14 @@ public class AudioIconUtil {
                     // 平方和除以数据总长度，得到音量大小。
                     double mean = v / (double) r;
                     double volume = 10 * Math.log10(mean);
-                    // 如果想利用这个数值进行操作，建议用 sendMessage 将其抛出，在 Handler 里进行处理。
-                    Log.d(TAG, "分贝值:" + volume);
+                    Log.d(TAG, "分贝值1:" + volume + ">>" + v + ">>" + r + ">>" + Math.log10(mean));
                     Message msg = Message.obtain();
                     msg.what = CONSTANT_WHAT;
                     Bundle bundle = new Bundle();
                     bundle.putInt(CONSTANT_BUNDLE,(int)volume);
                     msg.setData(bundle);
                     mHandler.sendMessage(msg);
-                    // 大概一秒十次
+                    // 大概一秒五次
                     synchronized (mLock) {
                         try {
                             mLock.wait(100);
@@ -92,9 +94,17 @@ public class AudioIconUtil {
                 }
                 mAudioRecord.stop();
                 mAudioRecord.release();
-                mAudioRecord = null;
+                //mAudioRecord = null;
+                //归位0
+                Message msg = Message.obtain();
+                msg.what = CONSTANT_WHAT;
+                Bundle bundle = new Bundle();
+                bundle.putInt(CONSTANT_BUNDLE, 0);
+                msg.setData(bundle);
+                mHandler.sendMessage(msg);
             }
         }).start();
+
     }
 
     public void stop(){

@@ -5,10 +5,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
 
-import com.bao.wec.app.Constant;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,7 +20,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public class FileUtils {
-
+	public static final String SDCardRoot = Environment.getExternalStorageDirectory()
+			.getAbsolutePath()
+			+ File.separator;
 	public FileUtils() {
 
 	}
@@ -34,7 +36,8 @@ public class FileUtils {
 	 */
 	public static File createFileInSDCard(String fileName, String dir)
 			throws IOException {
-		File file = new File(Constant.Path.SDCardRoot + dir + File.separator
+
+		File file = new File(SDCardRoot + dir + File.separator
 				+ fileName);
 		//System.out.println("创建以下文件---->" + AppConstant.PATH.SDCardRoot + dir
 		//		+ File.separator + fileName);
@@ -56,7 +59,7 @@ public class FileUtils {
 	 *            不带SDCardRoot和后面的分隔符\的路径
 	 */
 	public static File creatSDDir(String dir) {
-		File dirFile = new File(Constant.Path.SDCardRoot + dir
+		File dirFile = new File(SDCardRoot + dir
 				+ File.separator);
 		LogUtils.i("创建路径结果---->" + dirFile.mkdirs() + "---->"
 				+ dirFile.getPath());
@@ -70,7 +73,7 @@ public class FileUtils {
 	 *            不带SDCardRoot和后面的分隔符\的路径
 	 */
 	public static boolean isFileExist(String fileName, String path) {
-		File file = new File(Constant.Path.SDCardRoot + path
+		File file = new File(SDCardRoot + path
 				+ File.separator + fileName);
 		//if (file.exists())
 			//System.out.println("文件存在--->" + path + File.separator + fileName);
@@ -97,7 +100,7 @@ public class FileUtils {
      * @return
      */
     public static boolean deleteFile(String fileName, String path) {
-        File file = new File(Constant.Path.SDCardRoot + path
+        File file = new File(SDCardRoot + path
                 + File.separator + fileName);
         if(file.exists()){
             return file.delete();

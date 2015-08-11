@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bao.wec.app.Constant;
+import com.example.williamhao.opensourceusage.Constant;
 
 
 /**

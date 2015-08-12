@@ -15,7 +15,7 @@ import android.widget.ImageView;
 public class AudioIconUtil {
     private static final String TAG = "AudioIconUtil";
     static final int SAMPLE_RATE_IN_HZ = 8000;
-    static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ,
+    static int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ,
             AudioFormat.CHANNEL_IN_DEFAULT, AudioFormat.ENCODING_PCM_16BIT);
     AudioRecord mAudioRecord;
     boolean isGetVoiceRun;
@@ -46,16 +46,44 @@ public class AudioIconUtil {
         };
     }
 
+    private static int[] mSampleRates = new int[] { 8000, 11025, 22050, 44100 };
+    public AudioRecord findAudioRecord() {
+        for (int rate : mSampleRates) {
+            for (short audioFormat : new short[] { AudioFormat.ENCODING_PCM_8BIT, AudioFormat.ENCODING_PCM_16BIT }) {
+                for (short channelConfig : new short[] { AudioFormat.CHANNEL_IN_MONO, AudioFormat.CHANNEL_IN_STEREO }) {
+                    try {
+                        LogUtils.d(TAG, "Attempting rate " + rate + "Hz, bits: " + audioFormat + ", channel: "
+                                + channelConfig);
+                        BUFFER_SIZE = AudioRecord.getMinBufferSize(rate, channelConfig, audioFormat);
+
+                        if (BUFFER_SIZE != AudioRecord.ERROR_BAD_VALUE) {
+                            // check if we can instantiate and have a success
+                            AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, rate, channelConfig, audioFormat, BUFFER_SIZE);
+
+                            if (recorder.getState() == AudioRecord.STATE_INITIALIZED)
+                                return recorder;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        LogUtils.e(TAG, rate + "Exception, keep trying.");
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
     public void begin() {
         if (isGetVoiceRun) {
-            Log.e(TAG, "还在录着呢");
+            LogUtils.e(TAG, "还在录着呢");
             return;
         }
-        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
-                AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
+
+        mAudioRecord = findAudioRecord();
         if (mAudioRecord == null) {
-            Log.e("sound", "mAudioRecord初始化失败");
+            LogUtils.e("sound", "mAudioRecord初始化失败");
+            return;
         }
         isGetVoiceRun = true;
 

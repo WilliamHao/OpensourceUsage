@@ -49,7 +49,7 @@ public class AudioIconUtil {
     private static int[] mSampleRates = new int[] { 8000, 11025, 22050, 44100 };
     public AudioRecord findAudioRecord() {
         for (int rate : mSampleRates) {
-            for (short audioFormat : new short[] { AudioFormat.ENCODING_PCM_8BIT, AudioFormat.ENCODING_PCM_16BIT }) {
+            for (short audioFormat : new short[] { AudioFormat.ENCODING_PCM_16BIT, AudioFormat.ENCODING_PCM_8BIT }) {
                 for (short channelConfig : new short[] { AudioFormat.CHANNEL_IN_MONO, AudioFormat.CHANNEL_IN_STEREO }) {
                     try {
                         LogUtils.d(TAG, "Attempting rate " + rate + "Hz, bits: " + audioFormat + ", channel: "
@@ -95,7 +95,17 @@ public class AudioIconUtil {
                 while (isGetVoiceRun) {
                     //r是实际读取的数据长度，一般而言r会小于buffersize
                     int r = mAudioRecord.read(buffer, 0, BUFFER_SIZE);
-                    if(r < 0) r = BUFFER_SIZE / 2;
+                    if(r == mAudioRecord.ERROR_INVALID_OPERATION){
+                        LogUtils.d(TAG, "Audio read error: invalid operation");
+                        isGetVoiceRun = false;
+                        r = BUFFER_SIZE/2;
+
+                    }else if(r == mAudioRecord.ERROR_BAD_VALUE){
+                        LogUtils.d(TAG, "Audio read error: bad value");
+                        isGetVoiceRun = false;
+                        r = BUFFER_SIZE/2;
+                    }
+
                     long v = 0;
                     // 将 buffer 内容取出，进行平方和运算
                     for (int i = 0; i < buffer.length; i++) {
@@ -103,6 +113,7 @@ public class AudioIconUtil {
                     }
                     // 平方和除以数据总长度，得到音量大小。
                     double mean = v / (double) r;
+                    if(mean <= 0.0) mean = 1;
                     double volume = 10 * Math.log10(mean);
                     Log.d(TAG, "分贝值1:" + volume + ">>" + v + ">>" + r + ">>" + Math.log10(mean));
                     Message msg = Message.obtain();

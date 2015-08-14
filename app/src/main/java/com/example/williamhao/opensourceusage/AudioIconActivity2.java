@@ -1,18 +1,20 @@
 package com.example.williamhao.opensourceusage;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.williamhao.utils.AudioIconUtil;
+import com.example.williamhao.utils.LogUtils;
+import com.example.williamhao.utils.MediaRecordUtil;
 
 import org.kymjs.kjframe.KJActivity;
 import org.kymjs.kjframe.ui.BindView;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by williamhao on 8/5/15.
@@ -29,30 +31,23 @@ public class AudioIconActivity2 extends KJActivity{
     private Button btn2;
     @BindView(id = R.id.image)
     private ImageView image;
-    @BindView(id = R.id.text)
+    @BindView(id = R.id.image2)
+    private ImageView image2;
     private TextView text;
-    private Handler mHandler;
-    private Thread mThread;
-    private Context mContext;
     private AudioIconUtil adio;
+    private MediaRecordUtil medio;
 
     @Override
     public void initData(){
-        mContext = this;
         adio = new AudioIconUtil(image);
-        //image.setImageLevel(2);
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg){
-                if(msg.what == 123){
-                    int audio = msg.getData().getInt("int");
-                    text.setText(String.valueOf(audio));
-                    if(audio>60){
-                        Toast.makeText(mContext, audio + "", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        };
+        try {
+            File file = new File(Environment.getExternalStorageDirectory().getCanonicalFile() + "/lulu.amr");
+            LogUtils.e("lulu",file.exists()+"");
+            medio = new MediaRecordUtil(file,image2);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -71,9 +66,11 @@ public class AudioIconActivity2 extends KJActivity{
 
     private void open(){
         adio.begin();
+        medio.startRecord();
     }
 
     private void close(){
         adio.stop();
+        medio.stopRecord();
     }
 }

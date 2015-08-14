@@ -4,7 +4,6 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.williamhao.utils.AudioIconUtil;
 import com.example.williamhao.utils.LogUtils;
@@ -33,7 +32,6 @@ public class AudioIconActivity2 extends KJActivity{
     private ImageView image;
     @BindView(id = R.id.image2)
     private ImageView image2;
-    private TextView text;
     private AudioIconUtil adio;
     private MediaRecordUtil medio;
 
